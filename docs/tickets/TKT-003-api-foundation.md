@@ -5,7 +5,7 @@
 | Area            | api / db                          |
 | Prioritas       | P0                                |
 | Ukuran          | M                                 |
-| Status          | Todo                              |
+| Status          | Review                            |
 | Bergantung pada | TKT-001                           |
 | Membuka         | TKT-004, TKT-016, semua modul api |
 | Asumsi terkait  | -                                 |
@@ -122,12 +122,12 @@ lain.
 
 ## Kriteria selesai
 
-- [ ] `pnpm dev:api` jalan dan `GET /api/health` mengembalikan `database: 'up'`; saat
+- [x] `pnpm dev:api` jalan dan `GET /api/health` mengembalikan `database: 'up'`; saat
       `docker compose stop postgres`, health mengembalikan 503.
-- [ ] `pnpm build` dari root berhasil dan `node apps/api/dist/main.js` jalan.
-- [ ] Pipe Zod, pagination, filter Prisma, serializer, dan audit punya test dan lolos.
-- [ ] `apps/api/README.md` dan `docs/architecture.md` diperbarui.
-- [ ] `pnpm check` dan `pnpm format:check` lolos.
+- [x] `pnpm build` dari root berhasil dan `node apps/api/dist/main.js` jalan.
+- [x] Pipe Zod, pagination, filter Prisma, serializer, dan audit punya test dan lolos.
+- [x] `apps/api/README.md` dan `docs/architecture.md` diperbarui.
+- [x] `pnpm check` dan `pnpm format:check` lolos.
 
 ## Cara verifikasi
 

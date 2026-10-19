@@ -63,3 +63,9 @@ ditimpa sebagai teks asli dengan font ter-embed. Jangan merender ulang saat undu
   dan test.
 - Aturan yang tidak bisa diekspresikan di skema (hitam hanya bila kyu 0, kyu 0 sampai 10, satu
   sertifikat aktif per peserta) ditegakkan di service dan diuji.
+- Akses database lewat `PrismaService` (satu instance). `@karate/db` di-build ke `dist/` dengan
+  `tsc` (`pnpm db:generate` = generate + build) supaya api bisa dijalankan sebagai ESM hasil
+  `nest build`.
+- Validasi input dengan Zod (`ZodValidationPipe`); gagal validasi: 400 dengan `errors` per field.
+- Pelanggaran aturan bisnis memakai `ConflictException` (**409**) dengan pesan Indonesia. Unique
+  Prisma (`P2002`) juga 409, record tidak ada (`P2025`) 404.

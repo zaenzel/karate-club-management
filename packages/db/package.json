@@ -4,13 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate": "prisma generate",
+    "generate": "prisma generate && pnpm build",
     "validate": "prisma validate",
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "seed": "prisma db seed",
     "studio": "prisma studio",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@prisma/adapter-pg": "~7.10.1",
@@ -22,5 +23,13 @@
     "prisma": "~7.10.1",
     "tsx": "^4.23.15",
     "typescript": "^6.0.2"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   }
 }

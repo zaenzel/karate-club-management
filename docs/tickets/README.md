@@ -29,7 +29,7 @@ Status yang dipakai: `Todo`, `In progress`, `Review`, `Done`, `Blocked` (sebutka
 | ----------------------------------------------- | --------------------------------------------- | -------- | -------------------- | ------ |
 | [TKT-001](TKT-001-verify-infra-and-prisma.md)   | Verifikasi infra lokal dan Prisma             | infra/db | -                    | Review |
 | [TKT-002](TKT-002-dotfiles-ci-first-commit.md)  | Dotfiles, CI GitHub Actions, commit awal      | infra    | 001                  | Review |
-| [TKT-003](TKT-003-api-foundation.md)            | Fondasi api: Prisma, validasi, error, paging  | api/db   | 001                  | Todo   |
+| [TKT-003](TKT-003-api-foundation.md)            | Fondasi api: Prisma, validasi, error, paging  | api/db   | 001                  | Review |
 | [TKT-004](TKT-004-auth-api.md)                  | Auth Super Admin (api)                        | api      | 003                  | Todo   |
 | [TKT-005](TKT-005-auth-web-and-shell.md)        | Login dan kerangka dashboard (web)            | web      | 004                  | Todo   |
 | [TKT-006](TKT-006-branches-api.md)              | Modul cabang (api)                            | api      | 004                  | Todo   |
@@ -158,8 +158,8 @@ Tiket merujuk bagian ini supaya tidak diulang di setiap file.
   `{ data: T[], meta: { page, pageSize, total, totalPages } }`.
 - Error memakai body `{ message: string, ... }` (bentuk bawaan NestJS), karena `api-client` web
   membaca `message`. Pesan dalam bahasa Indonesia. Validasi gagal: 400 dengan detail per field.
-  Tidak ditemukan: 404. Melanggar aturan bisnis: 409 (konflik) atau 422; pilih satu dan pakai
-  konsisten (fondasi di TKT-003 menetapkannya).
+  Tidak ditemukan: 404. Melanggar aturan bisnis: **409** (`ConflictException`), ditetapkan di
+  TKT-003.
 - Tanggal tanpa jam (tanggal lahir, tanggal ujian) dikirim sebagai string `YYYY-MM-DD`. Waktu
   lengkap sebagai ISO 8601.
 - Nilai `Decimal` Prisma (kyu) dikirim sebagai `number` (contoh `9.5`), bukan string atau objek.
