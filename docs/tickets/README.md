@@ -28,7 +28,7 @@ Status yang dipakai: `Todo`, `In progress`, `Review`, `Done`, `Blocked` (sebutka
 | No                                              | Judul                                         | Area     | Bergantung pada      | Status |
 | ----------------------------------------------- | --------------------------------------------- | -------- | -------------------- | ------ |
 | [TKT-001](TKT-001-verify-infra-and-prisma.md)   | Verifikasi infra lokal dan Prisma             | infra/db | -                    | Review |
-| [TKT-002](TKT-002-dotfiles-ci-first-commit.md)  | Dotfiles, CI GitHub Actions, commit awal      | infra    | 001                  | Todo   |
+| [TKT-002](TKT-002-dotfiles-ci-first-commit.md)  | Dotfiles, CI GitHub Actions, commit awal      | infra    | 001                  | Review |
 | [TKT-003](TKT-003-api-foundation.md)            | Fondasi api: Prisma, validasi, error, paging  | api/db   | 001                  | Todo   |
 | [TKT-004](TKT-004-auth-api.md)                  | Auth Super Admin (api)                        | api      | 003                  | Todo   |
 | [TKT-005](TKT-005-auth-web-and-shell.md)        | Login dan kerangka dashboard (web)            | web      | 004                  | Todo   |

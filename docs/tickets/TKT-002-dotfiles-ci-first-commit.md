@@ -5,7 +5,7 @@
 | Area            | infra            |
 | Prioritas       | P0               |
 | Ukuran          | S                |
-| Status          | Todo             |
+| Status          | Review           |
 | Bergantung pada | TKT-001          |
 | Membuka         | semua tiket lain |
 | Asumsi terkait  | -                |
@@ -86,11 +86,11 @@ berjalan hijau.
 
 ## Kriteria selesai
 
-- [ ] `.claude/skills/new-feature/SKILL.md`, `.github/workflows/ci.yml`, `.husky/commit-msg`,
+- [x] `.claude/skills/new-feature/SKILL.md`, `.github/workflows/ci.yml`, `.husky/commit-msg`,
       `.husky/pre-commit`, `.vscode/settings.json`, `.vscode/extensions.json` ada di root.
-- [ ] Folder `dotfiles-karate-club/` sudah tidak ada.
-- [ ] Commit dengan pesan tidak valid ditolak; commit valid lolos dan menjalankan lint-staged.
-- [ ] Commit awal berisi migrasi `init`, tanpa `.env` dan tanpa file generate.
+- [x] Folder `dotfiles-karate-club/` sudah tidak ada.
+- [x] Commit dengan pesan tidak valid ditolak; commit valid lolos dan menjalankan lint-staged.
+- [x] Commit awal berisi migrasi `init`, tanpa `.env` dan tanpa file generate.
 - [ ] (Jika remote ada) workflow CI hijau di `main`.
 
 ## Cara verifikasi
