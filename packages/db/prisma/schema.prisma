@@ -1,0 +1,342 @@
+// Skema fase 1 (lihat docs/requirements.md di root).
+// Ditunda ke fase berikutnya: role selain superadmin, raport, komponen nilai ujian.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enum
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  SUPERADMIN
+}
+
+enum MemberType {
+  COACH
+  STUDENT
+}
+
+enum ExamType {
+  KYU
+  DAN
+}
+
+enum ExamStatus {
+  DRAFT
+  ONGOING
+  FINISHED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  WAIVED
+}
+
+enum ExamResult {
+  PASSED
+  FAILED
+}
+
+enum GradeSource {
+  INITIAL
+  EXAM
+}
+
+enum CertificateStatus {
+  PENDING
+  READY
+  FAILED
+}
+
+enum AchievementLevel {
+  CITY
+  PROVINCE
+  NATIONAL
+  INTERNATIONAL
+  OTHER
+}
+
+// ---------------------------------------------------------------------------
+// Akun
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(uuid(7))
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         UserRole @default(SUPERADMIN)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Master data
+// ---------------------------------------------------------------------------
+
+model Branch {
+  id          String   @id @default(uuid(7))
+  code        String   @unique
+  name        String
+  city        String
+  address     String?
+  phone       String?
+  headCoachId String?  @map("head_coach_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  headCoach Member?  @relation("BranchHeadCoach", fields: [headCoachId], references: [id])
+  members   Member[] @relation("BranchMembers")
+  exams     Exam[]
+
+  @@map("branches")
+}
+
+// Urutan warna sabuk. Tidak ada rentang kyu per warna: warna baru dipilih manual saat hasil
+// ujian diinput. Hitam hanya boleh dipilih bila kyu peserta sudah 0 (divalidasi di aplikasi).
+model Belt {
+  id       String @id @default(uuid(7))
+  name     String @unique
+  order    Int    @unique
+  colorHex String @map("color_hex")
+
+  members          Member[]
+  participantsFrom ExamParticipant[] @relation("ParticipantFromBelt")
+  participantsTo   ExamParticipant[] @relation("ParticipantToBelt")
+  gradesFrom       GradeHistory[]    @relation("GradeFromBelt")
+  gradesTo         GradeHistory[]    @relation("GradeToBelt")
+
+  @@map("belts")
+}
+
+// ---------------------------------------------------------------------------
+// Member
+// ---------------------------------------------------------------------------
+
+model Member {
+  id           String     @id @default(uuid(7))
+  // Nomor anggota dibuat sistem. Kunci pertama halaman download publik.
+  memberNumber String     @unique @map("member_number")
+  type         MemberType
+  name         String
+  birthPlace   String     @map("birth_place")
+  // Kunci kedua halaman download publik.
+  birthDate    DateTime   @map("birth_date") @db.Date
+  address      String
+  phone        String?
+  branchId     String     @map("branch_id")
+  beltId       String     @map("belt_id")
+  // Kyu 10 sampai 0, kelipatan 0.5. Member baru mulai di 10.
+  kyu          Decimal    @default(10) @db.Decimal(3, 1)
+  // Terisi setelah sabuk hitam.
+  dan          Int?
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  branch       Branch   @relation("BranchMembers", fields: [branchId], references: [id])
+  belt         Belt     @relation(fields: [beltId], references: [id])
+  headOfBranch Branch[] @relation("BranchHeadCoach")
+
+  achievements     Achievement[]
+  gradeHistories   GradeHistory[]
+  examParticipants ExamParticipant[]
+  certificates     Certificate[]
+
+  @@index([branchId])
+  @@map("members")
+}
+
+model Achievement {
+  id            String           @id @default(uuid(7))
+  memberId      String           @map("member_id")
+  championship  String
+  level         AchievementLevel @default(OTHER)
+  // Contoh: "Kumite -60kg", "Kata perorangan".
+  category      String?
+  // Contoh: "Juara 1", "Perak", "Peserta".
+  result        String
+  date          DateTime         @db.Date
+  location      String?
+  attachmentKey String?          @map("attachment_key")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@map("achievements")
+}
+
+// Sumber kebenaran perubahan sabuk/kyu/dan. members.beltId/kyu/dan hanya cache nilai terakhir.
+model GradeHistory {
+  id                String      @id @default(uuid(7))
+  memberId          String      @map("member_id")
+  source            GradeSource
+  examParticipantId String?     @unique @map("exam_participant_id")
+  fromBeltId        String?     @map("from_belt_id")
+  toBeltId          String      @map("to_belt_id")
+  fromKyu           Decimal?    @map("from_kyu") @db.Decimal(3, 1)
+  toKyu             Decimal     @map("to_kyu") @db.Decimal(3, 1)
+  fromDan           Int?        @map("from_dan")
+  toDan             Int?        @map("to_dan")
+  occurredAt        DateTime    @default(now()) @map("occurred_at")
+
+  member          Member           @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  examParticipant ExamParticipant? @relation(fields: [examParticipantId], references: [id])
+  fromBelt        Belt?            @relation("GradeFromBelt", fields: [fromBeltId], references: [id])
+  toBelt          Belt             @relation("GradeToBelt", fields: [toBeltId], references: [id])
+
+  @@index([memberId, occurredAt])
+  @@map("grade_histories")
+}
+
+// ---------------------------------------------------------------------------
+// Ujian kenaikan tingkat
+// ---------------------------------------------------------------------------
+
+model Exam {
+  id        String     @id @default(uuid(7))
+  name      String
+  type      ExamType
+  date      DateTime   @db.Date
+  location  String
+  // Biaya default per peserta. Bisa ditimpa per peserta (ExamParticipant.fee).
+  baseFee   Int        @default(0) @map("base_fee")
+  status    ExamStatus @default(DRAFT)
+  // Penyelenggara. Kosong = pengurus pusat.
+  branchId  String?    @map("branch_id")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  branch       Branch?           @relation(fields: [branchId], references: [id])
+  examiners    ExamExaminer[]
+  participants ExamParticipant[]
+
+  @@index([date])
+  @@map("exams")
+}
+
+model ExamExaminer {
+  id      String  @id @default(uuid(7))
+  examId  String  @map("exam_id")
+  name    String
+  isChief Boolean @default(false) @map("is_chief")
+
+  exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@index([examId])
+  @@map("exam_examiners")
+}
+
+model ExamParticipant {
+  id            String        @id @default(uuid(7))
+  examId        String        @map("exam_id")
+  memberId      String        @map("member_id")
+  // Kondisi member saat didaftarkan.
+  fromBeltId    String        @map("from_belt_id")
+  fromKyu       Decimal       @map("from_kyu") @db.Decimal(3, 1)
+  fromDan       Int?          @map("from_dan")
+  fee           Int           @default(0)
+  paymentStatus PaymentStatus @default(UNPAID) @map("payment_status")
+  // Kosong sampai hasil diinput.
+  result        ExamResult?
+  // Default 1. Boleh 0.5, 2, atau lebih untuk lulusan terbaik.
+  kyuDecrease   Decimal?      @map("kyu_decrease") @db.Decimal(3, 1)
+  // Untuk ujian dan. Default 1.
+  danIncrease   Int?          @map("dan_increase")
+  toBeltId      String?       @map("to_belt_id")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  exam         Exam           @relation(fields: [examId], references: [id], onDelete: Cascade)
+  member       Member         @relation(fields: [memberId], references: [id])
+  fromBelt     Belt           @relation("ParticipantFromBelt", fields: [fromBeltId], references: [id])
+  toBelt       Belt?          @relation("ParticipantToBelt", fields: [toBeltId], references: [id])
+  gradeHistory GradeHistory?
+  certificates Certificate[]
+
+  @@unique([examId, memberId])
+  @@index([memberId])
+  @@map("exam_participants")
+}
+
+// ---------------------------------------------------------------------------
+// Sertifikat
+// ---------------------------------------------------------------------------
+
+model CertificateTemplate {
+  id           String   @id @default(uuid(7))
+  name         String
+  // Kunci file desain (PDF A4) di object storage.
+  fileKey      String   @map("file_key")
+  // Gambar tanda tangan ketua club.
+  signatureKey String?  @map("signature_key")
+  signerName   String   @map("signer_name")
+  signerTitle  String   @default("Ketua") @map("signer_title")
+  paperSize    String   @default("A4") @map("paper_size")
+  // Posisi field (nama, kyu, tanggal, dst.) di atas desain.
+  fieldLayout  Json?    @map("field_layout")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  certificates Certificate[]
+
+  @@map("certificate_templates")
+}
+
+model Certificate {
+  id                String            @id @default(uuid(7))
+  // Nomor unik tercetak di sertifikat.
+  number            String            @unique
+  memberId          String            @map("member_id")
+  examParticipantId String            @map("exam_participant_id")
+  templateId        String            @map("template_id")
+  status            CertificateStatus @default(PENDING)
+  // Kunci file hasil render di object storage.
+  pdfKey            String?           @map("pdf_key")
+  pngKey            String?           @map("png_key")
+  // Penerbitan ulang membuat baris baru dan menonaktifkan yang lama.
+  isActive          Boolean           @default(true) @map("is_active")
+  issuedAt          DateTime          @default(now()) @map("issued_at")
+  createdAt         DateTime          @default(now()) @map("created_at")
+
+  member          Member              @relation(fields: [memberId], references: [id])
+  examParticipant ExamParticipant     @relation(fields: [examParticipantId], references: [id])
+  template        CertificateTemplate @relation(fields: [templateId], references: [id])
+
+  // Dipakai halaman download publik: sertifikat aktif terbaru milik member.
+  @@index([memberId, isActive, issuedAt])
+  @@map("certificates")
+}
+
+// ---------------------------------------------------------------------------
+// Audit
+// ---------------------------------------------------------------------------
+
+model AuditLog {
+  id        String   @id @default(uuid(7))
+  userId    String?  @map("user_id")
+  action    String
+  entity    String
+  entityId  String   @map("entity_id")
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
