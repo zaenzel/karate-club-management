@@ -27,7 +27,16 @@ api.interceptors.response.use(
     const status = error.response?.status ?? 0;
     const message = error.response?.data?.message ?? error.message ?? 'Terjadi kesalahan jaringan';
 
-    // Tempat menangani 401 global, misalnya redirect ke /login.
+    if (
+      status === 401 &&
+      typeof window !== 'undefined' &&
+      !window.location.pathname.startsWith('/login')
+    ) {
+      const next = encodeURIComponent(window.location.pathname + window.location.search);
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.href = `/login?next=${next}`;
+    }
+
     return Promise.reject(new ApiError(message, status, error.response?.data));
   },
 );

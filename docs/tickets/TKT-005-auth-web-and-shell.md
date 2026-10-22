@@ -5,7 +5,7 @@
 | Area            | web                                |
 | Prioritas       | P0                                 |
 | Ukuran          | M                                  |
-| Status          | Todo                               |
+| Status          | Review                             |
 | Bergantung pada | TKT-004                            |
 | Membuka         | TKT-007, TKT-014, TKT-017, TKT-022 |
 | Asumsi terkait  | -                                  |
@@ -101,11 +101,11 @@ utama, dan logout. Request web ke api asli berjalan lewat `/api`.
 
 ## Kriteria selesai
 
-- [ ] Membuka `/` tanpa login diarahkan ke `/login?next=/`.
-- [ ] Login benar masuk ke dashboard dan nama admin tampil; login salah menampilkan pesan dari api.
-- [ ] Logout menghapus sesi dan kembali ke `/login`.
-- [ ] `http://localhost:3000/api/health` dilayani api asli; `/api/products` (mock) masih jalan.
-- [ ] Test schema dan form lolos; `pnpm check` dan `pnpm format:check` lolos.
+- [x] Membuka `/` tanpa login diarahkan ke `/login?next=/`.
+- [x] Login benar masuk ke dashboard dan nama admin tampil; login salah menampilkan pesan dari api.
+- [x] Logout menghapus sesi dan kembali ke `/login`.
+- [x] `http://localhost:3000/api/health` dilayani api asli; `/api/products` (mock) masih jalan.
+- [x] Test schema dan form lolos; `pnpm check` dan `pnpm format:check` lolos.
 
 ## Cara verifikasi
 
