@@ -14,6 +14,7 @@
     "db:generate": "pnpm --filter @karate/db generate",
     "db:migrate": "pnpm --filter @karate/db migrate:dev",
     "db:seed": "pnpm --filter @karate/db seed",
+    "db:seed:admin": "pnpm --filter @karate/api seed:admin",
     "db:studio": "pnpm --filter @karate/db studio",
     "lint": "pnpm -r --if-present lint",
     "typecheck": "pnpm -r --if-present typecheck",
@@ -34,6 +35,11 @@
   "lint-staged": {
     "*.{json,md,yml,yaml}": [
       "prettier --write"
+    ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "argon2"
     ]
   }
 }

@@ -5,7 +5,7 @@
 | Area            | api                       |
 | Prioritas       | P0                        |
 | Ukuran          | M                         |
-| Status          | Todo                      |
+| Status          | Review                    |
 | Bergantung pada | TKT-003                   |
 | Membuka         | TKT-005, TKT-006, TKT-011 |
 | Asumsi terkait  | -                         |
@@ -102,13 +102,13 @@ ditandai publik.
 
 ## Kriteria selesai
 
-- [ ] Endpoint baru tanpa `@Public()` otomatis membalas 401 tanpa cookie.
-- [ ] Login benar mengeset cookie httpOnly; `GET /api/auth/me` mengembalikan user.
-- [ ] Login salah membalas 401 dengan pesan yang sama di semua kasus; percobaan ke-6 dalam semenit
+- [x] Endpoint baru tanpa `@Public()` otomatis membalas 401 tanpa cookie.
+- [x] Login benar mengeset cookie httpOnly; `GET /api/auth/me` mengembalikan user.
+- [x] Login salah membalas 401 dengan pesan yang sama di semua kasus; percobaan ke-6 dalam semenit
       membalas 429.
-- [ ] Skrip seed admin idempotent dan terdokumentasi.
-- [ ] Env baru ada di `.env.example` dan divalidasi `loadEnv()`.
-- [ ] `pnpm check` dan `pnpm format:check` lolos.
+- [x] Skrip seed admin idempotent dan terdokumentasi.
+- [x] Env baru ada di `.env.example` dan divalidasi `loadEnv()`.
+- [x] `pnpm check` dan `pnpm format:check` lolos.
 
 ## Cara verifikasi
 
