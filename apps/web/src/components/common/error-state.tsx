@@ -1,3 +1,5 @@
+import { AlertCircle } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
 type ErrorStateProps = {
@@ -9,9 +11,12 @@ export function ErrorState({ message = 'Gagal memuat data.', onRetry }: ErrorSta
   return (
     <div
       role="alert"
-      className="flex flex-col items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-6 py-10 text-center"
+      className="flex flex-col items-center gap-3 rounded-xl border border-destructive/25 bg-destructive/10 px-6 py-10 text-center"
     >
-      <p className="text-sm text-destructive">{message}</p>
+      <span className="flex size-9 items-center justify-center rounded-lg bg-destructive/15 text-destructive">
+        <AlertCircle className="size-5" />
+      </span>
+      <p className="text-sm font-medium text-destructive">{message}</p>
       {onRetry ? (
         <Button variant="outline" size="sm" onClick={onRetry}>
           Coba lagi
