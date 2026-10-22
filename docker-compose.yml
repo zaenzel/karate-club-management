@@ -40,7 +40,7 @@ services:
 
   # Membuat bucket sekali saat pertama jalan, lalu berhenti.
   minio-init:
-    image: minio/mc:latest
+    image: minio/minio:latest
     depends_on:
       minio:
         condition: service_healthy
