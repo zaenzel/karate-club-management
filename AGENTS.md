@@ -33,6 +33,7 @@ pnpm infra:up           # PostgreSQL + MinIO
 pnpm db:generate        # Prisma Client (wajib sebelum typecheck/seed)
 pnpm db:migrate         # migrasi dev
 pnpm db:seed            # warna sabuk
+pnpm db:seed:admin      # akun superadmin awal
 pnpm dev:api            # http://localhost:4000/api/health
 pnpm dev:web            # http://localhost:3000
 pnpm check              # lint + typecheck + test semua workspace (jalankan sebelum selesai)

@@ -8,6 +8,12 @@ const envSchema = z.object({
   API_PORT: z.coerce.number().int().min(1).max(65535).default(4000),
   WEB_ORIGIN: z.url().default('http://localhost:3000'),
   DATABASE_URL: z.string().min(1),
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET minimal 32 karakter'),
+  JWT_EXPIRES_IN: z.string().default('8h'),
+  AUTH_COOKIE_NAME: z.string().default('karate_session'),
+  SUPERADMIN_EMAIL: z.string().email().optional(),
+  SUPERADMIN_PASSWORD: z.string().min(8).optional(),
+  SUPERADMIN_NAME: z.string().optional().default('Super Admin'),
 });
 
 export type Env = z.infer<typeof envSchema>;

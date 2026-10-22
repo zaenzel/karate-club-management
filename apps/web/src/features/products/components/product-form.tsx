@@ -81,7 +81,7 @@ export function ProductForm({
           aria-invalid={!!errors.category}
           defaultValue=""
           {...register('category')}
-          className="h-9 rounded-md border border-border bg-background px-3 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none aria-invalid:border-destructive"
+          className="h-9 rounded-lg border border-border/80 bg-background px-3 text-sm shadow-xs transition-colors focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none aria-invalid:border-destructive"
         >
           <option value="" disabled>
             Pilih kategori

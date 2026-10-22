@@ -60,3 +60,22 @@ async list(query: ListBranchesQuery) {
   `prisma.client.$transaction(async (tx) => ...)` agar log ikut transaksi.
 - Test unit tidak boleh membuka koneksi database: tiru `PrismaService` dengan objek berisi fungsi
   yang dipakai (`{ client: { branch: { findMany: vi.fn() } } }`).
+
+## Autentikasi
+
+Semua endpoint otomatis terproteksi oleh `JwtAuthGuard` global, kecuali jika ditandai publik:
+
+- Menandai endpoint publik: gunakan `@Public()` dari `./auth/public.decorator.js`.
+  ```ts
+  @Public()
+  @Get('public-info')
+  getPublicInfo() { ... }
+  ```
+- Mengambil info user yang sedang login: gunakan `@CurrentUser()` dari `./auth/current-user.decorator.js`.
+  ```ts
+  @Get('profile')
+  getProfile(@CurrentUser() user: AuthenticatedUser) {
+    return user;
+  }
+  ```
+- Seed Super Admin pertama: jalankan `pnpm db:seed:admin` (atau `pnpm --filter @karate/api seed:admin`).
