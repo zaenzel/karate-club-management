@@ -5,7 +5,7 @@
 | Area            | api                       |
 | Prioritas       | P0                        |
 | Ukuran          | S                         |
-| Status          | Todo                      |
+| Status          | Done                      |
 | Bergantung pada | TKT-004                   |
 | Membuka         | TKT-007, TKT-008, TKT-011 |
 | Asumsi terkait  | -                         |
@@ -86,10 +86,10 @@ memberCount, createdAt, updatedAt }` untuk detail; list boleh tanpa `memberCount
 
 ## Kriteria selesai
 
-- [ ] Kelima endpoint + `options` jalan dan hanya bisa diakses saat login.
-- [ ] Kode cabang unik dan dinormalisasi huruf besar.
-- [ ] Kepala cabang non-coach ditolak; cabang yang dipakai tidak bisa dihapus.
-- [ ] Test service dan schema lolos; `pnpm check` dan `pnpm format:check` lolos.
+- [x] Kelima endpoint + `options` jalan dan hanya bisa diakses saat login.
+- [x] Kode cabang unik dan dinormalisasi huruf besar.
+- [x] Kepala cabang non-coach ditolak; cabang yang dipakai tidak bisa dihapus.
+- [x] Test service dan schema lolos; `pnpm check` dan `pnpm format:check` lolos.
 
 ## Cara verifikasi
 
