@@ -6,11 +6,13 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
+import { AuditModule } from '../audit/audit.module.js';
 import { ConfigModule, ENV } from '../config/config.module.js';
 import type { Env } from '../config/env.js';
 
 @Module({
   imports: [
+    AuditModule,
     ConfigModule,
     JwtModule.registerAsync({
       inject: [ENV],
