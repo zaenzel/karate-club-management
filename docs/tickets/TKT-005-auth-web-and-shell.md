@@ -5,7 +5,7 @@
 | Area            | web                                |
 | Prioritas       | P0                                 |
 | Ukuran          | M                                  |
-| Status          | Review                             |
+| Status          | Done                               |
 | Bergantung pada | TKT-004                            |
 | Membuka         | TKT-007, TKT-014, TKT-017, TKT-022 |
 | Asumsi terkait  | -                                  |

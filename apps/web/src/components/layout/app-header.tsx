@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 import { siteConfig } from '@/config/site';
 
@@ -41,7 +41,9 @@ export function AppHeader({ userSlot, navItems = siteConfig.nav }: AppHeaderProp
               {siteConfig.name}
             </span>
           </Link>
-          <HeaderNav items={navItems} />
+          <Suspense fallback={<nav className="hidden h-8 items-center gap-1 md:flex" />}>
+            <HeaderNav items={navItems} />
+          </Suspense>
         </div>
         {userSlot ? <div className="flex items-center gap-3">{userSlot}</div> : null}
       </div>

@@ -5,7 +5,7 @@
 | Area            | web              |
 | Prioritas       | P0               |
 | Ukuran          | M                |
-| Status          | Todo             |
+| Status          | Done             |
 | Bergantung pada | TKT-005, TKT-006 |
 | Membuka         | TKT-009          |
 | Asumsi terkait  | -                |
@@ -80,10 +80,10 @@ Admin bisa melihat daftar cabang (cari + pagination), menambah, mengubah, dan me
 
 ## Kriteria selesai
 
-- [ ] Daftar cabang dengan pencarian dan pagination berjalan; state tercermin di URL.
-- [ ] Tambah, ubah, hapus berjalan dan daftar ter-update tanpa reload manual.
-- [ ] Error api (kode duplikat, cabang dipakai) tampil jelas.
-- [ ] Test schema dan komponen dumb lolos; `pnpm check` dan `pnpm format:check` lolos.
+- [x] Daftar cabang dengan pencarian dan pagination berjalan; state tercermin di URL.
+- [x] Tambah, ubah, hapus berjalan dan daftar ter-update tanpa reload manual.
+- [x] Error api (kode duplikat, cabang dipakai) tampil jelas.
+- [x] Test schema dan komponen dumb lolos; `pnpm check` dan `pnpm format:check` lolos.
 
 ## Cara verifikasi
 
