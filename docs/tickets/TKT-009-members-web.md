@@ -5,7 +5,7 @@
 | Area            | web              |
 | Prioritas       | P0               |
 | Ukuran          | L                |
-| Status          | Todo             |
+| Status          | Done             |
 | Bergantung pada | TKT-007, TKT-008 |
 | Membuka         | TKT-010, TKT-015 |
 | Asumsi terkait  | A1, A2, A3, A4   |

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { ConfirmDialog } from '@/components/common/confirm-dialog';
 import { ErrorState } from '@/components/common/error-state';
 
 import { useDeleteMember } from '../api/delete-member';
@@ -18,17 +19,18 @@ export function MemberDetailContainer({ id }: { id: string }) {
   const { data: gradeHistories = [], isLoading: isLoadingHistory } = useMemberGradeHistory(id);
   const deleteMutation = useDeleteMember();
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     if (!member) return;
-    const confirmed = confirm(
-      `Apakah Anda yakin ingin menghapus member ${member.name}? Tindakan ini tidak dapat dibatalkan.`,
-    );
-    if (!confirmed) return;
-
     try {
       setDeleteError(null);
       await deleteMutation.mutateAsync(member.id);
+      setIsDeleteConfirmOpen(false);
       router.push('/members');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Gagal menghapus member';
@@ -73,6 +75,17 @@ export function MemberDetailContainer({ id }: { id: string }) {
 
       {/* Achievements Section */}
       <MemberAchievementsContainer memberId={member.id} />
+
+      <ConfirmDialog
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Member"
+        description={`Apakah Anda yakin ingin menghapus member ${member.name} (${member.memberNumber})? Tindakan ini tidak dapat dibatalkan.`}
+        confirmText="Hapus Member"
+        variant="destructive"
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

@@ -5,7 +5,7 @@
 | Area            | api / web |
 | Prioritas       | P1        |
 | Ukuran          | M         |
-| Status          | Todo      |
+| Status          | Done      |
 | Bergantung pada | TKT-009   |
 | Membuka         | -         |
 | Asumsi terkait  | -         |

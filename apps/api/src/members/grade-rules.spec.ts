@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isValidKyu, validateGrade } from './grade-rules.js';
+import { computeResultGrade, isValidKyu, validateGrade } from './grade-rules.js';
 
 describe('isValidKyu', () => {
   it('menerima kyu valid: 10, 9.5, 5, 0.5, 0', () => {
@@ -64,5 +64,136 @@ describe('validateGrade', () => {
   it('menolak jika kyu tidak valid', () => {
     const errors = validateGrade({ beltOrder: 2, kyu: 9.3 });
     expect(errors.length).toBeGreaterThan(0);
+  });
+});
+
+describe('computeResultGrade', () => {
+  it('10 turun 1 jadi 9', () => {
+    const res = computeResultGrade({
+      examType: 'KYU',
+      from: { beltOrder: 1, kyu: 10 },
+      kyuDecrease: 1,
+      toBeltOrder: 1,
+    });
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.to).toEqual({ beltOrder: 1, kyu: 9, dan: null });
+    }
+  });
+
+  it('10 turun 0.5 jadi 9.5', () => {
+    const res = computeResultGrade({
+      examType: 'KYU',
+      from: { beltOrder: 1, kyu: 10 },
+      kyuDecrease: 0.5,
+      toBeltOrder: 1,
+    });
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.to).toEqual({ beltOrder: 1, kyu: 9.5, dan: null });
+    }
+  });
+
+  it('1 turun 2 ditolak (karena kyu < 0)', () => {
+    const res = computeResultGrade({
+      examType: 'KYU',
+      from: { beltOrder: 5, kyu: 1 },
+      kyuDecrease: 2,
+      toBeltOrder: 5,
+    });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.errors).toContain('Nilai kyu hasil tidak boleh kurang dari 0');
+    }
+  });
+
+  it('1 turun 1 ke hitam valid dan menghasilkan dan 1', () => {
+    const res = computeResultGrade({
+      examType: 'KYU',
+      from: { beltOrder: 5, kyu: 1 },
+      kyuDecrease: 1,
+      toBeltOrder: 6, // black
+    });
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.to).toEqual({ beltOrder: 6, kyu: 0, dan: 1 });
+    }
+  });
+
+  it('2 turun 1 ke hitam ditolak (karena kyu hasil = 1 != 0)', () => {
+    const res = computeResultGrade({
+      examType: 'KYU',
+      from: { beltOrder: 5, kyu: 2 },
+      kyuDecrease: 1,
+      toBeltOrder: 6,
+    });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.errors).toContain('Sabuk hitam hanya diperbolehkan bila kyu hasil bernilai 0');
+    }
+  });
+
+  it('biru ke hijau ditolak (warna tidak boleh turun)', () => {
+    // biru (order 4) ke hijau (order 3)
+    const res = computeResultGrade({
+      examType: 'KYU',
+      from: { beltOrder: 4, kyu: 5 },
+      kyuDecrease: 1,
+      toBeltOrder: 3,
+    });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.errors).toContain(
+        'Warna sabuk baru tidak boleh lebih rendah dari warna sabuk sebelumnya',
+      );
+    }
+  });
+
+  it('ujian DAN untuk non-hitam ditolak', () => {
+    const res = computeResultGrade({
+      examType: 'DAN',
+      from: { beltOrder: 5, kyu: 1 },
+      danIncrease: 1,
+    });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.errors).toContain('Ujian DAN hanya dapat diikuti oleh member bersabuk hitam');
+    }
+  });
+
+  it('ujian KYU untuk member hitam ditolak', () => {
+    const res = computeResultGrade({
+      examType: 'KYU',
+      from: { beltOrder: 6, kyu: 0, dan: 1 },
+      kyuDecrease: 1,
+    });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.errors).toContain('Member bersabuk hitam tidak dapat mengikuti ujian KYU');
+    }
+  });
+
+  it('ujian DAN: dan 1 + 1 = 2', () => {
+    const res = computeResultGrade({
+      examType: 'DAN',
+      from: { beltOrder: 6, kyu: 0, dan: 1 },
+      danIncrease: 1,
+    });
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.to).toEqual({ beltOrder: 6, kyu: 0, dan: 2 });
+    }
+  });
+
+  it('ujian DAN: dan 2 + 2 = 4', () => {
+    const res = computeResultGrade({
+      examType: 'DAN',
+      from: { beltOrder: 6, kyu: 0, dan: 2 },
+      danIncrease: 2,
+    });
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.to).toEqual({ beltOrder: 6, kyu: 0, dan: 4 });
+    }
   });
 });
