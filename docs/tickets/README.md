@@ -32,11 +32,11 @@ Status yang dipakai: `Todo`, `In progress`, `Review`, `Done`, `Blocked` (sebutka
 | [TKT-003](TKT-003-api-foundation.md)            | Fondasi api: Prisma, validasi, error, paging  | api/db   | 001                  | Review |
 | [TKT-004](TKT-004-auth-api.md)                  | Auth Super Admin (api)                        | api      | 003                  | Review |
 | [TKT-005](TKT-005-auth-web-and-shell.md)        | Login dan kerangka dashboard (web)            | web      | 004                  | Review |
-| [TKT-006](TKT-006-branches-api.md)              | Modul cabang (api)                            | api      | 004                  | Todo   |
-| [TKT-007](TKT-007-branches-web.md)              | Fitur cabang (web)                            | web      | 005, 006             | Todo   |
-| [TKT-008](TKT-008-members-api.md)               | Modul member dan riwayat tingkatan (api)      | api      | 006                  | Todo   |
-| [TKT-009](TKT-009-members-web.md)               | Fitur member (web)                            | web      | 007, 008             | Todo   |
-| [TKT-010](TKT-010-achievements.md)              | Prestasi member (api + web)                   | api/web  | 009                  | Todo   |
+| [TKT-006](TKT-006-branches-api.md)              | Modul cabang (api)                            | api      | 004                  | Done   |
+| [TKT-007](TKT-007-branches-web.md)              | Fitur cabang (web)                            | web      | 005, 006             | Done   |
+| [TKT-008](TKT-008-members-api.md)               | Modul member dan riwayat tingkatan (api)      | api      | 006                  | Done   |
+| [TKT-009](TKT-009-members-web.md)               | Fitur member (web)                            | web      | 007, 008             | Done   |
+| [TKT-010](TKT-010-achievements.md)              | Prestasi member (api + web)                   | api/web  | 009                  | Done   |
 | [TKT-011](TKT-011-exams-api.md)                 | Modul event ujian dan penguji (api)           | api      | 006                  | Todo   |
 | [TKT-012](TKT-012-exam-participants-api.md)     | Peserta, biaya, dan hasil ujian (api)         | api      | 008, 011             | Todo   |
 | [TKT-013](TKT-013-finish-exam-api.md)           | Menutup ujian dan riwayat tingkatan (api)     | api      | 012                  | Todo   |

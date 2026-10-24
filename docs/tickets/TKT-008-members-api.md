@@ -5,7 +5,7 @@
 | Area            | api                       |
 | Prioritas       | P0                        |
 | Ukuran          | L                         |
-| Status          | Todo                      |
+| Status          | Done                      |
 | Bergantung pada | TKT-006                   |
 | Membuka         | TKT-009, TKT-010, TKT-012 |
 | Asumsi terkait  | A2, A3, A4, A10           |
