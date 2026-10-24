@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
+import { useCoachOptions } from '../api/get-coach-options';
 import { useBranch } from '../api/get-branch';
 import { useUpdateBranch } from '../api/update-branch';
 import { BranchForm } from './branch-form';
@@ -18,6 +19,7 @@ type EditBranchContainerProps = {
 export function EditBranchContainer({ id }: EditBranchContainerProps) {
   const router = useRouter();
   const { data: branch, isLoading, isError, error, refetch } = useBranch(id);
+  const { data: coachOptions = [] } = useCoachOptions();
   const updateMutation = useUpdateBranch();
   const [submitError, setSubmitError] = useState<string | undefined>();
 
@@ -32,6 +34,7 @@ export function EditBranchContainer({ id }: EditBranchContainerProps) {
           city: values.city.trim(),
           address: values.address?.trim() ? values.address.trim() : null,
           phone: values.phone?.trim() ? values.phone.trim() : null,
+          headCoachId: values.headCoachId?.trim() ? values.headCoachId.trim() : null,
         },
       });
       router.push('/branches');
@@ -80,12 +83,14 @@ export function EditBranchContainer({ id }: EditBranchContainerProps) {
           city: branch.city,
           address: branch.address ?? '',
           phone: branch.phone ?? '',
+          headCoachId: branch.headCoach?.id ?? '',
         }}
         onSubmit={handleSubmit}
         isSubmitting={updateMutation.isPending}
         submitError={submitError}
         submitLabel="Perbarui Cabang"
         isEdit
+        coachOptions={coachOptions}
       />
     </div>
   );

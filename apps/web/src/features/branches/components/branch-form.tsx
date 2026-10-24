@@ -19,6 +19,7 @@ type BranchFormProps = {
   submitError?: string;
   submitLabel?: string;
   isEdit?: boolean;
+  coachOptions?: { id: string; name: string }[];
 };
 
 export function BranchForm({
@@ -28,6 +29,7 @@ export function BranchForm({
   submitError,
   submitLabel,
   isEdit = false,
+  coachOptions = [],
 }: BranchFormProps) {
   const finalSubmitLabel = submitLabel ?? (isEdit ? 'Perbarui Cabang' : 'Simpan');
   const {
@@ -42,6 +44,7 @@ export function BranchForm({
       city: '',
       address: '',
       phone: '',
+      headCoachId: '',
       ...defaultValues,
     },
   });
@@ -96,6 +99,25 @@ export function BranchForm({
           aria-invalid={!!errors.phone}
           {...register('phone')}
         />
+      </Field>
+
+      <Field
+        id="headCoachId"
+        label="Kepala Cabang (Coach) (opsional)"
+        error={errors.headCoachId?.message}
+      >
+        <select
+          id="headCoachId"
+          {...register('headCoachId')}
+          className="h-9 w-full rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option value="">Belum ditentukan</option>
+          {coachOptions.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </Field>
 
       {submitError ? (
