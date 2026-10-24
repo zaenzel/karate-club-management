@@ -24,6 +24,7 @@ export const branchFormSchema = z.object({
     )
     .optional()
     .or(z.literal('')),
+  headCoachId: z.string().optional().or(z.literal('')),
 });
 
 export type BranchFormValues = z.infer<typeof branchFormSchema>;

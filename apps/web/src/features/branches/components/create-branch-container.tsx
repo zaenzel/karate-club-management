@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { useCoachOptions } from '../api/get-coach-options';
 import { useCreateBranch } from '../api/create-branch';
 import { BranchForm } from './branch-form';
 import type { BranchFormValues } from '../schemas/branch-schema';
@@ -10,6 +11,7 @@ import type { BranchFormValues } from '../schemas/branch-schema';
 export function CreateBranchContainer() {
   const router = useRouter();
   const createMutation = useCreateBranch();
+  const { data: coachOptions = [] } = useCoachOptions();
   const [submitError, setSubmitError] = useState<string | undefined>();
 
   const handleSubmit = async (values: BranchFormValues) => {
@@ -21,6 +23,7 @@ export function CreateBranchContainer() {
         city: values.city.trim(),
         address: values.address?.trim() ? values.address.trim() : null,
         phone: values.phone?.trim() ? values.phone.trim() : null,
+        headCoachId: values.headCoachId?.trim() ? values.headCoachId.trim() : null,
       });
       router.push('/branches');
     } catch (err: unknown) {
@@ -37,6 +40,7 @@ export function CreateBranchContainer() {
         isSubmitting={createMutation.isPending}
         submitError={submitError}
         submitLabel="Tambah Cabang"
+        coachOptions={coachOptions}
       />
     </div>
   );

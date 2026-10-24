@@ -47,4 +47,11 @@ describe('BranchForm', () => {
       expect.anything(),
     );
   });
+
+  it('renders coachOptions in dropdown', () => {
+    const coachOptions = [{ id: 'c-1', name: 'Sensei Budi' }];
+    render(<BranchForm onSubmit={vi.fn()} coachOptions={coachOptions} />);
+
+    expect(screen.getByText('Sensei Budi')).toBeInTheDocument();
+  });
 });
