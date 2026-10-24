@@ -15,6 +15,7 @@ import {
 
 export interface ParticipantPaymentDialogProps {
   participant: ExamParticipant | null;
+  defaultFee?: number;
   isOpen: boolean;
   onClose: () => void;
   onSave: (values: { fee?: number; paymentStatus?: PaymentStatus }) => Promise<void>;
@@ -22,11 +23,19 @@ export interface ParticipantPaymentDialogProps {
 
 export function ParticipantPaymentDialog({
   participant,
+  defaultFee,
   isOpen,
   onClose,
   onSave,
 }: ParticipantPaymentDialogProps) {
-  const [fee, setFee] = useState<number>(participant?.fee ?? 0);
+  const getInitialFee = () => {
+    if (participant?.fee !== undefined && participant.fee !== null && participant.fee > 0) {
+      return participant.fee;
+    }
+    return defaultFee ?? 0;
+  };
+
+  const [fee, setFee] = useState<number | string>(getInitialFee);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(
     participant?.paymentStatus ?? 'UNPAID',
   );
@@ -40,7 +49,11 @@ export function ParticipantPaymentDialog({
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      await onSave({ fee, paymentStatus });
+      const numericFee = fee === '' ? 0 : Number(fee);
+      await onSave({
+        fee: isNaN(numericFee) ? 0 : numericFee,
+        paymentStatus,
+      });
       onClose();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Gagal memperbarui status pembayaran';
@@ -72,15 +85,32 @@ export function ParticipantPaymentDialog({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="participantFee">Biaya Ujian (Rp)</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="participantFee">Biaya Ujian (Rp)</Label>
+              {defaultFee !== undefined && Number(fee) !== defaultFee && (
+                <button
+                  type="button"
+                  onClick={() => setFee(defaultFee)}
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  Set ke biaya ujian (Rp {defaultFee.toLocaleString('id-ID')})
+                </button>
+              )}
+            </div>
             <Input
               id="participantFee"
               type="number"
               min={0}
               step={1000}
               value={fee}
-              onChange={(e) => setFee(Number(e.target.value))}
+              onChange={(e) => setFee(e.target.value === '' ? '' : e.target.value)}
+              placeholder={defaultFee !== undefined ? String(defaultFee) : '0'}
             />
+            {defaultFee !== undefined && (
+              <p className="text-[11px] text-muted-foreground">
+                Biaya dasar event ujian: Rp {defaultFee.toLocaleString('id-ID')}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col gap-1.5">

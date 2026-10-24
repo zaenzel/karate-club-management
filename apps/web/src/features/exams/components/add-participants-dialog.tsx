@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, UserPlus, X, AlertCircle } from 'lucide-react';
+import { Search, UserPlus, X, AlertCircle, CheckSquare } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -154,17 +154,40 @@ export function AddParticipantsDialog({
             </p>
           ) : (
             <div className="space-y-2">
-              <div className="flex items-center justify-between border-b border-border/50 pb-2 text-xs text-muted-foreground">
-                <button
-                  type="button"
-                  onClick={handleSelectAll}
-                  className="font-medium text-primary hover:underline"
-                >
-                  {selectedIds.length === eligibleMembers.length
-                    ? 'Batal pilih semua'
-                    : 'Pilih semua di daftar ini'}
-                </button>
-                <span>{selectedIds.length} dipilih</span>
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-muted/40 p-2.5">
+                <label className="flex cursor-pointer items-center gap-2.5 text-xs font-semibold text-foreground select-none">
+                  <input
+                    type="checkbox"
+                    checked={
+                      eligibleMembers.length > 0 && selectedIds.length === eligibleMembers.length
+                    }
+                    onChange={handleSelectAll}
+                    className="size-4 rounded accent-primary"
+                  />
+                  <span>
+                    {selectedIds.length === eligibleMembers.length
+                      ? 'Semua member tercentang'
+                      : 'Centang semua member'}
+                  </span>
+                </label>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {selectedIds.length} dari {eligibleMembers.length} dipilih
+                  </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSelectAll}
+                    className="h-7 px-2.5 text-xs font-medium"
+                  >
+                    <CheckSquare className="mr-1 size-3.5" />
+                    {selectedIds.length === eligibleMembers.length
+                      ? 'Batal Checklist Semua'
+                      : 'Checklist Semua'}
+                  </Button>
+                </div>
               </div>
 
               {eligibleMembers.map((member) => {

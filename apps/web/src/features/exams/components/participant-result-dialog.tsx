@@ -36,8 +36,8 @@ export function ParticipantResultDialog({
   onSave,
 }: ParticipantResultDialogProps) {
   const [result, setResult] = useState<ExamResult>(participant?.result ?? 'PASSED');
-  const [kyuDecrease, setKyuDecrease] = useState<number>(participant?.kyuDecrease ?? 1);
-  const [danIncrease, setDanIncrease] = useState<number>(participant?.danIncrease ?? 1);
+  const [kyuDecrease, setKyuDecrease] = useState<number | string>(participant?.kyuDecrease ?? 1);
+  const [danIncrease, setDanIncrease] = useState<number | string>(participant?.danIncrease ?? 1);
   const [toBeltId, setToBeltId] = useState<string>(
     participant?.toBelt?.id ?? participant?.from.belt.id ?? '',
   );
@@ -49,27 +49,61 @@ export function ParticipantResultDialog({
     [belts, toBeltId, participant],
   );
 
+  const numericKyuDecrease =
+    kyuDecrease === '' || isNaN(Number(kyuDecrease)) ? undefined : Number(kyuDecrease);
+  const numericDanIncrease =
+    danIncrease === '' || isNaN(Number(danIncrease)) ? undefined : Number(danIncrease);
+
   const preview = useMemo(() => {
     if (!participant) return null;
+    if (result === 'FAILED') return null;
+
+    if (examType === 'KYU' && (numericKyuDecrease === undefined || numericKyuDecrease <= 0)) {
+      return {
+        belt: selectedTargetBelt ?? participant.from.belt,
+        kyu: participant.from.kyu,
+        dan: null,
+        error: 'Penurunan kyu harus diisi angka yang lebih besar dari 0',
+      };
+    }
+    if (examType === 'DAN' && (numericDanIncrease === undefined || numericDanIncrease <= 0)) {
+      return {
+        belt: selectedTargetBelt ?? participant.from.belt,
+        kyu: 0,
+        dan: participant.from.dan ?? 1,
+        error: 'Kenaikan dan harus diisi angka minimal 1',
+      };
+    }
+
     return previewGradeResult({
       examType,
       fromBelt: participant.from.belt,
       fromKyu: participant.from.kyu,
       fromDan: participant.from.dan,
       result,
-      kyuDecrease: examType === 'KYU' ? kyuDecrease : undefined,
-      danIncrease: examType === 'DAN' ? danIncrease : undefined,
+      kyuDecrease: examType === 'KYU' ? numericKyuDecrease : undefined,
+      danIncrease: examType === 'DAN' ? numericDanIncrease : undefined,
       targetBelt: selectedTargetBelt,
     });
-  }, [participant, examType, result, kyuDecrease, danIncrease, selectedTargetBelt]);
+  }, [participant, examType, result, numericKyuDecrease, numericDanIncrease, selectedTargetBelt]);
 
   if (!isOpen || !participant) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (result === 'PASSED' && preview?.error) {
-      setErrorMessage(preview.error);
-      return;
+    if (result === 'PASSED') {
+      if (examType === 'KYU' && (numericKyuDecrease === undefined || numericKyuDecrease <= 0)) {
+        setErrorMessage('Penurunan kyu harus diisi angka yang lebih besar dari 0');
+        return;
+      }
+      if (examType === 'DAN' && (numericDanIncrease === undefined || numericDanIncrease <= 0)) {
+        setErrorMessage('Kenaikan dan harus diisi angka minimal 1');
+        return;
+      }
+      if (preview?.error) {
+        setErrorMessage(preview.error);
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -77,8 +111,8 @@ export function ParticipantResultDialog({
     try {
       await onSave({
         result,
-        kyuDecrease: examType === 'KYU' ? kyuDecrease : undefined,
-        danIncrease: examType === 'DAN' ? danIncrease : undefined,
+        kyuDecrease: examType === 'KYU' ? numericKyuDecrease : undefined,
+        danIncrease: examType === 'DAN' ? numericDanIncrease : undefined,
         toBeltId: examType === 'KYU' ? toBeltId : undefined,
       });
       onClose();
@@ -181,7 +215,8 @@ export function ParticipantResultDialog({
                     min={0.5}
                     max={10}
                     value={kyuDecrease}
-                    onChange={(e) => setKyuDecrease(Number(e.target.value))}
+                    onChange={(e) => setKyuDecrease(e.target.value)}
+                    placeholder="1"
                   />
                   <p className="text-[11px] text-muted-foreground">
                     Default: 1 (boleh 0.5, 2, dll)
@@ -223,7 +258,8 @@ export function ParticipantResultDialog({
                   min={1}
                   max={10}
                   value={danIncrease}
-                  onChange={(e) => setDanIncrease(Number(e.target.value))}
+                  onChange={(e) => setDanIncrease(e.target.value)}
+                  placeholder="1"
                 />
                 <p className="text-[11px] text-muted-foreground">Default: 1 tingkat ke atas</p>
               </div>

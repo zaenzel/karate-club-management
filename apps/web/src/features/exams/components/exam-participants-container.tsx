@@ -3,6 +3,7 @@
 import { Lock, Plus, Users } from 'lucide-react';
 import { useState } from 'react';
 
+import { ConfirmDialog } from '@/components/common/confirm-dialog';
 import { Button } from '@/components/ui/button';
 
 import { useBelts } from '../api/get-belts';
@@ -42,6 +43,7 @@ export function ExamParticipantsContainer({ exam, branchOptions }: ExamParticipa
   const [isFinishOpen, setIsFinishOpen] = useState(false);
   const [selectedForPayment, setSelectedForPayment] = useState<ExamParticipant | null>(null);
   const [selectedForResult, setSelectedForResult] = useState<ExamParticipant | null>(null);
+  const [participantToRemove, setParticipantToRemove] = useState<ExamParticipant | null>(null);
 
   const { data: participants = [], isLoading } = useParticipants(exam.id, {
     branchId: branchFilter || undefined,
@@ -57,10 +59,8 @@ export function ExamParticipantsContainer({ exam, branchOptions }: ExamParticipa
   const updateResultMutation = useUpdateParticipantResult(exam.id);
   const finishExamMutation = useFinishExam();
 
-  const handleRemove = async (participant: ExamParticipant) => {
-    if (confirm(`Yakin ingin mengeluarkan ${participant.member.name} dari ujian?`)) {
-      await removeParticipantMutation.mutateAsync(participant.id);
-    }
+  const handleRemove = (participant: ExamParticipant) => {
+    setParticipantToRemove(participant);
   };
 
   const handleSavePayment = async (values: { fee?: number; paymentStatus?: PaymentStatus }) => {
@@ -192,13 +192,16 @@ export function ExamParticipantsContainer({ exam, branchOptions }: ExamParticipa
       />
 
       <ParticipantPaymentDialog
+        key={selectedForPayment?.id ?? 'payment-dialog'}
         participant={selectedForPayment}
+        defaultFee={exam.baseFee}
         isOpen={Boolean(selectedForPayment)}
         onClose={() => setSelectedForPayment(null)}
         onSave={handleSavePayment}
       />
 
       <ParticipantResultDialog
+        key={selectedForResult?.id ?? 'result-dialog'}
         participant={selectedForResult}
         examType={exam.type}
         belts={belts}
@@ -212,6 +215,25 @@ export function ExamParticipantsContainer({ exam, branchOptions }: ExamParticipa
         onClose={() => setIsFinishOpen(false)}
         onConfirmFinish={handleConfirmFinish}
         stats={exam.stats}
+      />
+
+      <ConfirmDialog
+        isOpen={Boolean(participantToRemove)}
+        onClose={() => setParticipantToRemove(null)}
+        onConfirm={async () => {
+          if (!participantToRemove) return;
+          await removeParticipantMutation.mutateAsync(participantToRemove.id);
+          setParticipantToRemove(null);
+        }}
+        title="Keluarkan Peserta"
+        description={
+          participantToRemove
+            ? `Yakin ingin mengeluarkan ${participantToRemove.member.name} (${participantToRemove.member.memberNumber}) dari ujian ini?`
+            : ''
+        }
+        confirmText="Keluarkan"
+        variant="destructive"
+        isLoading={removeParticipantMutation.isPending}
       />
     </div>
   );

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
+import { ConfirmDialog } from '@/components/common/confirm-dialog';
 import { buttonVariants } from '@/components/ui/button';
 
 import { useBranchOptions } from '../api/get-branch-options';
@@ -31,6 +32,8 @@ export function ExamDetailContainer({ examId }: ExamDetailContainerProps) {
   const setExaminersMutation = useSetExaminers();
 
   const [actionError, setActionError] = useState<string | null>(null);
+  const [isStartConfirmOpen, setIsStartConfirmOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -58,29 +61,29 @@ export function ExamDetailContainer({ examId }: ExamDetailContainerProps) {
     );
   }
 
-  const handleStartExam = async () => {
-    const confirmed = confirm(
-      'Mulai pelaksanaan ujian ini? Status akan berubah menjadi "Berlangsung" dan penilaian peserta dapat dilakukan.',
-    );
-    if (!confirmed) return;
+  const handleStartExam = () => {
+    setIsStartConfirmOpen(true);
+  };
 
+  const handleConfirmStart = async () => {
     try {
       setActionError(null);
       await startMutation.mutateAsync(exam.id);
+      setIsStartConfirmOpen(false);
     } catch (err: unknown) {
       setActionError(err instanceof Error ? err.message : 'Gagal memulai ujian');
     }
   };
 
-  const handleDeleteExam = async () => {
-    const confirmed = confirm(
-      `Hapus ujian "${exam.name}"? Seluruh data peserta dan penguji akan ikut terhapus.`,
-    );
-    if (!confirmed) return;
+  const handleDeleteExam = () => {
+    setIsDeleteConfirmOpen(true);
+  };
 
+  const handleConfirmDelete = async () => {
     try {
       setActionError(null);
       await deleteMutation.mutateAsync(exam.id);
+      setIsDeleteConfirmOpen(false);
       router.push('/exams');
     } catch (err: unknown) {
       setActionError(err instanceof Error ? err.message : 'Gagal menghapus ujian');
@@ -140,6 +143,27 @@ export function ExamDetailContainer({ examId }: ExamDetailContainerProps) {
           <ExamParticipantsContainer exam={exam} branchOptions={branchOptions} />
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={isStartConfirmOpen}
+        onClose={() => setIsStartConfirmOpen(false)}
+        onConfirm={handleConfirmStart}
+        title="Mulai Pelaksanaan Ujian"
+        description="Mulai pelaksanaan ujian ini? Status ujian akan berubah menjadi 'Berlangsung' dan penilaian peserta sudah dapat dilakukan."
+        confirmText="Mulai Ujian"
+        isLoading={startMutation.isPending}
+      />
+
+      <ConfirmDialog
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Ujian"
+        description={`Hapus ujian "${exam.name}"? Seluruh data peserta dan dewan penguji akan ikut terhapus permanen.`}
+        confirmText="Hapus Ujian"
+        variant="destructive"
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

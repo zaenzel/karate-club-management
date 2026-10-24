@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useState } from 'react';
 
+import { ConfirmDialog } from '@/components/common/confirm-dialog';
 import { PageHeader } from '@/components/common/page-header';
 import { Button, buttonVariants } from '@/components/ui/button';
 
@@ -23,16 +24,18 @@ export function ExamListContainer() {
   const { data: branchOptions = [] } = useBranchOptions();
   const deleteMutation = useDeleteExam();
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [examToDelete, setExamToDelete] = useState<Exam | null>(null);
 
-  const handleDelete = async (exam: Exam) => {
-    const confirmed = confirm(
-      `Hapus ujian "${exam.name}"? Seluruh data peserta dan penguji akan ikut terhapus.`,
-    );
-    if (!confirmed) return;
+  const handleDelete = (exam: Exam) => {
+    setExamToDelete(exam);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!examToDelete) return;
     try {
       setDeleteError(null);
-      await deleteMutation.mutateAsync(exam.id);
+      await deleteMutation.mutateAsync(examToDelete.id);
+      setExamToDelete(null);
     } catch (err: unknown) {
       setDeleteError(err instanceof Error ? err.message : 'Gagal menghapus ujian');
     }
@@ -110,6 +113,17 @@ export function ExamListContainer() {
           </div>
         </div>
       ) : null}
+
+      <ConfirmDialog
+        isOpen={Boolean(examToDelete)}
+        onClose={() => setExamToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Ujian"
+        description={`Hapus ujian "${examToDelete?.name}"? Seluruh data peserta dan penguji akan ikut terhapus permanen.`}
+        confirmText="Hapus Ujian"
+        variant="destructive"
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

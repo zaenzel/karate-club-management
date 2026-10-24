@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useState } from 'react';
 
+import { ConfirmDialog } from '@/components/common/confirm-dialog';
 import { PageHeader } from '@/components/common/page-header';
 import { Button, buttonVariants } from '@/components/ui/button';
 
@@ -25,16 +26,18 @@ export function MemberListContainer() {
   const { data: belts = [] } = useBelts();
   const deleteMutation = useDeleteMember();
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [memberToDelete, setMemberToDelete] = useState<Member | null>(null);
 
-  const handleDelete = async (member: Member) => {
-    const confirmed = confirm(
-      `Hapus member ${member.name} (${member.memberNumber})? Tindakan ini tidak dapat dibatalkan.`,
-    );
-    if (!confirmed) return;
+  const handleDelete = (member: Member) => {
+    setMemberToDelete(member);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!memberToDelete) return;
     try {
       setDeleteError(null);
-      await deleteMutation.mutateAsync(member.id);
+      await deleteMutation.mutateAsync(memberToDelete.id);
+      setMemberToDelete(null);
     } catch (err: unknown) {
       setDeleteError(err instanceof Error ? err.message : 'Gagal menghapus member');
     }
@@ -121,6 +124,17 @@ export function MemberListContainer() {
           </div>
         </div>
       ) : null}
+
+      <ConfirmDialog
+        isOpen={Boolean(memberToDelete)}
+        onClose={() => setMemberToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Member"
+        description={`Apakah Anda yakin ingin menghapus member ${memberToDelete?.name} (${memberToDelete?.memberNumber})? Tindakan ini tidak dapat dibatalkan.`}
+        confirmText="Hapus Member"
+        variant="destructive"
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }
