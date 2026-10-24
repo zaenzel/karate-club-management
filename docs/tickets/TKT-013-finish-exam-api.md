@@ -5,7 +5,7 @@
 | Area            | api              |
 | Prioritas       | P0               |
 | Ukuran          | M                |
-| Status          | Todo             |
+| Status          | Review           |
 | Bergantung pada | TKT-012          |
 | Membuka         | TKT-015, TKT-018 |
 | Asumsi terkait  | A8               |

@@ -1,18 +1,5 @@
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  Optional,
-} from '@nestjs/common';
-import {
-  ExamResult,
-  ExamStatus,
-  ExamType,
-  GradeSource,
-  PaymentStatus,
-  Prisma,
-} from '@karate/db';
+import { ConflictException, Inject, Injectable, NotFoundException, Optional } from '@nestjs/common';
+import { ExamResult, ExamStatus, ExamType, GradeSource, PaymentStatus, Prisma } from '@karate/db';
 
 import { AuditService } from '../audit/audit.service.js';
 import type { AuthenticatedUser } from '../auth/current-user.decorator.js';
@@ -31,10 +18,7 @@ import type {
 } from './dto/participants.dto.js';
 import type { SetExaminersDto } from './dto/set-examiners.dto.js';
 import type { UpdateExamDto } from './dto/update-exam.dto.js';
-import {
-  EXAM_FINISHED_HANDLERS,
-  type ExamFinishedHandler,
-} from './exam-finished-handler.js';
+import { EXAM_FINISHED_HANDLERS, type ExamFinishedHandler } from './exam-finished-handler.js';
 import { canChangeType, canDelete, canEdit, canFinish, canStart } from './exam-status.js';
 
 export type ExamStats = {
@@ -272,11 +256,7 @@ export class ExamsService {
     };
   }
 
-  async update(
-    id: string,
-    dto: UpdateExamDto,
-    user?: AuthenticatedUser,
-  ): Promise<ExamResponse> {
+  async update(id: string, dto: UpdateExamDto, user?: AuthenticatedUser): Promise<ExamResponse> {
     const existing = await this.prisma.client.exam.findUnique({
       where: { id },
       include: {
@@ -536,7 +516,8 @@ export class ExamsService {
       }),
     ]);
 
-    const blackBelt = belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
+    const blackBelt =
+      belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
 
     return participants.map((p) => {
       let preview: ExamParticipantResponse['preview'] = null;
@@ -599,7 +580,8 @@ export class ExamsService {
     const belts = await this.prisma.client.belt.findMany({
       orderBy: { order: 'asc' },
     });
-    const blackBelt = belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
+    const blackBelt =
+      belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
 
     // Ambil ID semua member yang saat ini terdaftar di ujian aktif mana pun (A7)
     const activeParticipants = await this.prisma.client.examParticipant.findMany({
@@ -656,11 +638,7 @@ export class ExamsService {
     }));
   }
 
-  async addParticipants(
-    examId: string,
-    dto: AddParticipantsDto,
-    user?: AuthenticatedUser,
-  ) {
+  async addParticipants(examId: string, dto: AddParticipantsDto, user?: AuthenticatedUser) {
     const exam = await this.prisma.client.exam.findUnique({
       where: { id: examId },
     });
@@ -670,15 +648,14 @@ export class ExamsService {
     }
 
     if (exam.status === ExamStatus.FINISHED) {
-      throw new ConflictException(
-        'Tidak dapat mendaftarkan peserta ke ujian yang sudah Selesai',
-      );
+      throw new ConflictException('Tidak dapat mendaftarkan peserta ke ujian yang sudah Selesai');
     }
 
     const belts = await this.prisma.client.belt.findMany({
       orderBy: { order: 'asc' },
     });
-    const blackBelt = belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
+    const blackBelt =
+      belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
 
     // Ambil data seluruh calon member
     const candidates = await this.prisma.client.member.findMany({
@@ -819,9 +796,7 @@ export class ExamsService {
     }
 
     if (participant.exam.status === ExamStatus.FINISHED) {
-      throw new ConflictException(
-        'Tidak dapat mengeluarkan peserta dari ujian yang sudah Selesai',
-      );
+      throw new ConflictException('Tidak dapat mengeluarkan peserta dari ujian yang sudah Selesai');
     }
 
     await this.prisma.client.$transaction(async (tx) => {
@@ -862,9 +837,7 @@ export class ExamsService {
     }
 
     if (participant.exam.status === ExamStatus.FINISHED) {
-      throw new ConflictException(
-        'Tidak dapat mengubah pembayaran pada ujian yang sudah Selesai',
-      );
+      throw new ConflictException('Tidak dapat mengubah pembayaran pada ujian yang sudah Selesai');
     }
 
     await this.prisma.client.$transaction(async (tx) => {
@@ -915,8 +888,7 @@ export class ExamsService {
     }
 
     if (participant.exam.status !== ExamStatus.ONGOING) {
-      const statusLabel =
-        participant.exam.status === ExamStatus.DRAFT ? 'Draf' : 'Selesai';
+      const statusLabel = participant.exam.status === ExamStatus.DRAFT ? 'Draf' : 'Selesai';
       throw new ConflictException(
         `Hasil ujian hanya dapat diisi saat ujian Berlangsung (status saat ini: ${statusLabel})`,
       );
@@ -964,12 +936,11 @@ export class ExamsService {
     const belts = await this.prisma.client.belt.findMany({
       orderBy: { order: 'asc' },
     });
-    const blackBelt = belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
+    const blackBelt =
+      belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
 
-    const kyuDecrease =
-      participant.exam.type === ExamType.KYU ? (dto.kyuDecrease ?? 1) : undefined;
-    const danIncrease =
-      participant.exam.type === ExamType.DAN ? (dto.danIncrease ?? 1) : undefined;
+    const kyuDecrease = participant.exam.type === ExamType.KYU ? (dto.kyuDecrease ?? 1) : undefined;
+    const danIncrease = participant.exam.type === ExamType.DAN ? (dto.danIncrease ?? 1) : undefined;
 
     let targetBeltId = dto.toBeltId ?? participant.fromBeltId;
     let targetBelt = belts.find((b) => b.id === targetBeltId);
@@ -1080,7 +1051,8 @@ export class ExamsService {
     const belts = await this.prisma.client.belt.findMany({
       orderBy: { order: 'asc' },
     });
-    const blackBelt = belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
+    const blackBelt =
+      belts.find((b) => b.order === DEFAULT_BLACK_BELT_ORDER) ?? belts[belts.length - 1];
 
     const passedParticipantIds: string[] = [];
 

@@ -37,11 +37,11 @@ Status yang dipakai: `Todo`, `In progress`, `Review`, `Done`, `Blocked` (sebutka
 | [TKT-008](TKT-008-members-api.md)               | Modul member dan riwayat tingkatan (api)      | api      | 006                  | Done   |
 | [TKT-009](TKT-009-members-web.md)               | Fitur member (web)                            | web      | 007, 008             | Done   |
 | [TKT-010](TKT-010-achievements.md)              | Prestasi member (api + web)                   | api/web  | 009                  | Done   |
-| [TKT-011](TKT-011-exams-api.md)                 | Modul event ujian dan penguji (api)           | api      | 006                  | Todo   |
-| [TKT-012](TKT-012-exam-participants-api.md)     | Peserta, biaya, dan hasil ujian (api)         | api      | 008, 011             | Todo   |
-| [TKT-013](TKT-013-finish-exam-api.md)           | Menutup ujian dan riwayat tingkatan (api)     | api      | 012                  | Todo   |
-| [TKT-014](TKT-014-exams-web.md)                 | Fitur event ujian (web)                       | web      | 005, 011             | Todo   |
-| [TKT-015](TKT-015-exam-participants-web.md)     | Peserta, hasil, dan tutup ujian (web)         | web      | 013, 014             | Todo   |
+| [TKT-011](TKT-011-exams-api.md)                 | Modul event ujian dan penguji (api)           | api      | 006                  | Review |
+| [TKT-012](TKT-012-exam-participants-api.md)     | Peserta, biaya, dan hasil ujian (api)         | api      | 008, 011             | Review |
+| [TKT-013](TKT-013-finish-exam-api.md)           | Menutup ujian dan riwayat tingkatan (api)     | api      | 012                  | Review |
+| [TKT-014](TKT-014-exams-web.md)                 | Fitur event ujian (web)                       | web      | 005, 011             | Review |
+| [TKT-015](TKT-015-exam-participants-web.md)     | Peserta, hasil, dan tutup ujian (web)         | web      | 013, 014             | Review |
 | [TKT-016](TKT-016-storage-module.md)            | Modul storage MinIO/S3 (api)                  | api      | 003                  | Todo   |
 | [TKT-017](TKT-017-certificate-templates.md)     | Template sertifikat (api + web)               | api/web  | 005, 016             | Todo   |
 | [TKT-018](TKT-018-certificate-records.md)       | Baris sertifikat, penomoran, terbit ulang     | api      | 013, 017             | Todo   |

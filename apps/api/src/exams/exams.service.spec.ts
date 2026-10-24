@@ -120,9 +120,9 @@ describe('ExamsService', () => {
         _count: { participants: 2 },
       });
 
-      await expect(
-        service.update('exam-1', { name: 'Ganti Nama' }),
-      ).rejects.toThrow(ConflictException);
+      await expect(service.update('exam-1', { name: 'Ganti Nama' })).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('update menolak mengubah tipe jika sudah ada peserta', async () => {
@@ -133,9 +133,9 @@ describe('ExamsService', () => {
         _count: { participants: 5 },
       });
 
-      await expect(
-        service.update('exam-1', { type: ExamType.DAN }),
-      ).rejects.toThrow(ConflictException);
+      await expect(service.update('exam-1', { type: ExamType.DAN })).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('delete menolak jika status ONGOING atau FINISHED', async () => {
@@ -343,10 +343,7 @@ describe('ExamsService', () => {
           status: ExamStatus.FINISHED,
           branch: null,
           examiners: [],
-          participants: [
-            { result: ExamResult.PASSED },
-            { result: ExamResult.FAILED },
-          ],
+          participants: [{ result: ExamResult.PASSED }, { result: ExamResult.FAILED }],
         });
 
       prisma.client.member.findUnique.mockResolvedValue({
@@ -388,11 +385,7 @@ describe('ExamsService', () => {
       });
 
       // Handler dipanggil dengan id lulus
-      expect(mockHandler.handle).toHaveBeenCalledWith(
-        expect.anything(),
-        'exam-1',
-        ['part-1'],
-      );
+      expect(mockHandler.handle).toHaveBeenCalledWith(expect.anything(), 'exam-1', ['part-1']);
     });
   });
 });

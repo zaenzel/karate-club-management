@@ -12,7 +12,11 @@ export type AddParticipantsDto = z.infer<typeof addParticipantsSchema>;
 
 export const updatePaymentSchema = z
   .object({
-    fee: z.number().int('Biaya harus berupa bilangan bulat').min(0, 'Biaya tidak boleh negatif').optional(),
+    fee: z
+      .number()
+      .int('Biaya harus berupa bilangan bulat')
+      .min(0, 'Biaya tidak boleh negatif')
+      .optional(),
     paymentStatus: z.nativeEnum(PaymentStatus).optional(),
   })
   .refine((data) => data.fee !== undefined || data.paymentStatus !== undefined, {
@@ -24,7 +28,11 @@ export type UpdatePaymentDto = z.infer<typeof updatePaymentSchema>;
 export const updateResultSchema = z.object({
   result: z.nativeEnum(ExamResult, { error: 'Hasil ujian tidak valid' }),
   kyuDecrease: z.number().positive('Penurunan kyu harus lebih besar dari 0').optional(),
-  danIncrease: z.number().int('Kenaikan dan harus bilangan bulat').min(1, 'Kenaikan dan minimal 1').optional(),
+  danIncrease: z
+    .number()
+    .int('Kenaikan dan harus bilangan bulat')
+    .min(1, 'Kenaikan dan minimal 1')
+    .optional(),
   toBeltId: z.string().uuid('ID sabuk tujuan tidak valid').optional().nullable(),
 });
 

@@ -5,7 +5,7 @@
 | Area            | web              |
 | Prioritas       | P0               |
 | Ukuran          | M                |
-| Status          | Todo             |
+| Status          | Review           |
 | Bergantung pada | TKT-005, TKT-011 |
 | Membuka         | TKT-015          |
 | Asumsi terkait  | -                |
