@@ -5,7 +5,7 @@
 | Area            | api / web        |
 | Prioritas       | P0               |
 | Ukuran          | M                |
-| Status          | Todo             |
+| Status          | Review           |
 | Bergantung pada | TKT-005, TKT-016 |
 | Membuka         | TKT-018          |
 | Asumsi terkait  | -                |
@@ -107,7 +107,9 @@ pnpm --filter @karate/web check
 pnpm check && pnpm format:check
 ```
 
-## Catatan
+## Catatan & Penambahan Fitur (Scope Update)
 
-- Pertanyaan terbuka di requirements: file desain + font, nama ketua dan tanda tangannya. Tiket ini
-  tidak menunggu jawabannya.
+- **Penambahan Fitur Visual Layout Editor (Permintaan Pengguna):**
+  - Dari rancangan awal yang sebelumnya tidak mencakup editor visual, fitur ini kini ditambahkan untuk memudahkan penempatan koordinat field sertifikat (`name`, `birth`, `branch`, `grade`, `examDate`, `examLocation`, `number`, `signature`).
+  - Menyediakan endpoint backend pratinjau gambar (`GET /certificate-templates/:id/files/preview`) menggunakan render `pdftoppm`.
+  - Menyediakan antarmuka editor visual interaktif di web (`apps/web`) dengan pratinjau kanvas, pin/kotak field yang dapat digeser (_drag & drop_), pengaturan ukuran font dan perataan, serta tombol simpan koordinat ke database (`fieldLayout`).

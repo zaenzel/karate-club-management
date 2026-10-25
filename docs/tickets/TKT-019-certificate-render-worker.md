@@ -5,7 +5,7 @@
 | Area            | worker / api / infra                     |
 | Prioritas       | P0                                       |
 | Ukuran          | L                                        |
-| Status          | Todo (desain diterima, A12-A14 terjawab) |
+| Status          | Review                                   |
 | Bergantung pada | TKT-018, TKT-017, jawaban A12 sampai A14 |
 | Membuka         | unduhan nyata di TKT-020 dan TKT-021     |
 | Asumsi terkait  | -                                        |
