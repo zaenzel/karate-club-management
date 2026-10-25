@@ -10,11 +10,18 @@ export function formatKyu(kyu: number): string {
   return kyu.toString().replace('.', ',');
 }
 
-export function formatGradeSummary(beltName: string, kyu: number, dan: number | null): string {
+export function formatGradeSummary(
+  beltName: string,
+  kyu: number | null | undefined,
+  dan: number | null | undefined,
+): string {
   if (dan !== null && dan !== undefined && dan > 0) {
     return `${beltName}, Dan ${dan}`;
   }
-  return `${beltName}, Kyu ${formatKyu(kyu)}`;
+  if (kyu !== null && kyu !== undefined) {
+    return `${beltName}, Kyu ${formatKyu(kyu)}`;
+  }
+  return beltName;
 }
 
 export function formatBirthDate(dateStr: string): string {

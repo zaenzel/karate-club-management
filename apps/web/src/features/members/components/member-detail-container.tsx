@@ -9,14 +9,17 @@ import { ErrorState } from '@/components/common/error-state';
 import { useDeleteMember } from '../api/delete-member';
 import { useMember } from '../api/get-member';
 import { useMemberGradeHistory } from '../api/get-member-grade-history';
+import { useMemberCertificates } from '../api/get-member-certificates';
 import { GradeHistoryList } from './grade-history-list';
 import { MemberAchievementsContainer } from './member-achievements-container';
+import { MemberCertificatesList } from './member-certificates-list';
 import { MemberDetail } from './member-detail';
 
 export function MemberDetailContainer({ id }: { id: string }) {
   const router = useRouter();
   const { data: member, isLoading, isError, error, refetch } = useMember(id);
   const { data: gradeHistories = [], isLoading: isLoadingHistory } = useMemberGradeHistory(id);
+  const { data: certificates = [], isLoading: isLoadingCertificates } = useMemberCertificates(id);
   const deleteMutation = useDeleteMember();
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
@@ -72,6 +75,9 @@ export function MemberDetailContainer({ id }: { id: string }) {
 
       {/* Grade History Section */}
       <GradeHistoryList histories={gradeHistories} isLoading={isLoadingHistory} />
+
+      {/* Certificates Section */}
+      <MemberCertificatesList certificates={certificates} isLoading={isLoadingCertificates} />
 
       {/* Achievements Section */}
       <MemberAchievementsContainer memberId={member.id} />

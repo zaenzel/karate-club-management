@@ -13,10 +13,14 @@ import { useDeleteExam } from '../api/delete-exam';
 import { useExam } from '../api/get-exam';
 import { useSetExaminers } from '../api/set-examiners';
 import { useStartExam } from '../api/start-exam';
+import { useExamCertificates } from '../api/get-exam-certificates';
+import { useBackfillExamCertificates } from '../api/backfill-exam-certificates';
+import { downloadExamCertificate } from '../api/download-certificate';
 import type { ExaminersFormValues } from '../schemas/examiners-schema';
 import { ExamSummary } from './exam-summary';
 import { ExaminersEditor } from './examiners-editor';
 import { ExamParticipantsContainer } from './exam-participants-container';
+import { ExamCertificatesSection } from './exam-certificates-section';
 
 export interface ExamDetailContainerProps {
   examId: string;
@@ -30,6 +34,8 @@ export function ExamDetailContainer({ examId }: ExamDetailContainerProps) {
   const startMutation = useStartExam();
   const deleteMutation = useDeleteExam();
   const setExaminersMutation = useSetExaminers();
+  const backfillMutation = useBackfillExamCertificates(examId);
+  const { data: examCertificates = [] } = useExamCertificates(examId, exam?.status === 'FINISHED');
 
   const [actionError, setActionError] = useState<string | null>(null);
   const [isStartConfirmOpen, setIsStartConfirmOpen] = useState(false);
@@ -99,6 +105,24 @@ export function ExamDetailContainer({ examId }: ExamDetailContainerProps) {
     }
   };
 
+  const handleBackfillCertificates = async () => {
+    try {
+      setActionError(null);
+      await backfillMutation.mutateAsync();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : 'Gagal membuat sertifikat susulan');
+    }
+  };
+
+  const handleDownloadCertificate = async (id: string, format: 'pdf' | 'png') => {
+    try {
+      setActionError(null);
+      await downloadExamCertificate(id, format);
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : 'Gagal mengunduh sertifikat');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -143,6 +167,15 @@ export function ExamDetailContainer({ examId }: ExamDetailContainerProps) {
           <ExamParticipantsContainer exam={exam} branchOptions={branchOptions} />
         </div>
       </div>
+
+      {exam.status === 'FINISHED' && (
+        <ExamCertificatesSection
+          certificates={examCertificates}
+          onBackfill={handleBackfillCertificates}
+          onDownload={handleDownloadCertificate}
+          isBackfilling={backfillMutation.isPending}
+        />
+      )}
 
       <ConfirmDialog
         isOpen={isStartConfirmOpen}

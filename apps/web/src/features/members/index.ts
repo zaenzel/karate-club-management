@@ -12,6 +12,12 @@ export { useCreateMember, createMember } from './api/create-member';
 export { useUpdateMember, updateMember } from './api/update-member';
 export { useDeleteMember, deleteMember } from './api/delete-member';
 export { useMemberGradeHistory, getMemberGradeHistory } from './api/get-member-grade-history';
+export {
+  useMemberCertificates,
+  getMemberCertificates,
+  downloadMemberCertificate,
+} from './api/get-member-certificates';
+export { MemberCertificatesList } from './components/member-certificates-list';
 export { useBranchOptions, getBranchOptions } from './api/get-branch-options';
 export { useBelts, getBelts } from './api/get-belts';
 export { useAchievements, getAchievements } from './api/get-achievements';
