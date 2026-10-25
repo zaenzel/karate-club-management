@@ -14,6 +14,21 @@ const envSchema = z.object({
   SUPERADMIN_EMAIL: z.string().email().optional(),
   SUPERADMIN_PASSWORD: z.string().min(8).optional(),
   SUPERADMIN_NAME: z.string().optional().default('Super Admin'),
+  S3_ENDPOINT: z.string().min(1).default('http://localhost:9000'),
+  S3_BUCKET: z.string().min(1).default('karate-files'),
+  S3_REGION: z.string().min(1).default('us-east-1'),
+  S3_ACCESS_KEY: z.string().min(1).default('minio'),
+  S3_SECRET_KEY: z.string().min(1).default('minio_dev_password'),
+  S3_FORCE_PATH_STYLE: z
+    .preprocess((val) => {
+      if (val === undefined || val === '') return true;
+      if (typeof val === 'string') return val === 'true' || val === '1';
+      return Boolean(val);
+    }, z.boolean())
+    .default(true),
+  S3_PRESIGN_TTL_SECONDS: z.coerce.number().int().positive().default(300),
+  S3_PUBLIC_ENDPOINT: z.string().optional(),
+  REDIS_URL: z.string().default('redis://localhost:6379'),
 });
 
 export type Env = z.infer<typeof envSchema>;

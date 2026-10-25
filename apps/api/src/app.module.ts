@@ -11,11 +11,18 @@ import { HealthController } from './health/health.controller.js';
 import { MembersModule } from './members/members.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 
+import { CertificateTemplatesModule } from './certificate-templates/certificate-templates.module.js';
+import { CertificatesModule } from './certificates/certificates.module.js';
+import { StorageModule } from './storage/storage.module.js';
+
 @Module({
   imports: [
     ConfigModule,
     PrismaModule,
     AuditModule,
+    StorageModule,
+    CertificateTemplatesModule,
+    CertificatesModule,
     AuthModule,
     BranchesModule,
     BeltsModule,
