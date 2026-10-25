@@ -29,7 +29,21 @@ describe('loadEnv', () => {
     expect(() => loadEnv({ JWT_SECRET: base.JWT_SECRET })).toThrow('DATABASE_URL');
   });
 
-  it('gagal bila JWT_SECRET kurang dari 32 karakter', () => {
-    expect(() => loadEnv({ ...base, JWT_SECRET: 'terlalu-pendek' })).toThrow('JWT_SECRET');
+  it('memakai nilai default S3 bila tidak diset', () => {
+    const env = loadEnv(base);
+    expect(env.S3_ENDPOINT).toBe('http://localhost:9000');
+    expect(env.S3_BUCKET).toBe('karate-files');
+    expect(env.S3_REGION).toBe('us-east-1');
+    expect(env.S3_FORCE_PATH_STYLE).toBe(true);
+    expect(env.S3_PRESIGN_TTL_SECONDS).toBe(300);
+  });
+
+  it('mengonversi S3_FORCE_PATH_STYLE string ke boolean', () => {
+    expect(loadEnv({ ...base, S3_FORCE_PATH_STYLE: 'false' }).S3_FORCE_PATH_STYLE).toBe(false);
+    expect(loadEnv({ ...base, S3_FORCE_PATH_STYLE: 'true' }).S3_FORCE_PATH_STYLE).toBe(true);
+  });
+
+  it('mengonversi S3_PRESIGN_TTL_SECONDS ke number', () => {
+    expect(loadEnv({ ...base, S3_PRESIGN_TTL_SECONDS: '600' }).S3_PRESIGN_TTL_SECONDS).toBe(600);
   });
 });

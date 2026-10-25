@@ -8,4 +8,5 @@ export interface ExamFinishedHandler {
     examId: string,
     passedParticipantIds: string[],
   ): Promise<void>;
+  afterCommit?(examId: string): Promise<void>;
 }

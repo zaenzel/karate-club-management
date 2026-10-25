@@ -1187,6 +1187,13 @@ export class ExamsService {
       },
     );
 
+    // Panggil afterCommit handlers setelah transaksi sukses commit (misal enqueuing render job)
+    for (const handler of this.finishedHandlers) {
+      if (handler.afterCommit) {
+        await handler.afterCommit(id);
+      }
+    }
+
     return this.findById(id);
   }
 

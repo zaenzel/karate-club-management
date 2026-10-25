@@ -42,11 +42,11 @@ Status yang dipakai: `Todo`, `In progress`, `Review`, `Done`, `Blocked` (sebutka
 | [TKT-013](TKT-013-finish-exam-api.md)           | Menutup ujian dan riwayat tingkatan (api)     | api      | 012                  | Review |
 | [TKT-014](TKT-014-exams-web.md)                 | Fitur event ujian (web)                       | web      | 005, 011             | Review |
 | [TKT-015](TKT-015-exam-participants-web.md)     | Peserta, hasil, dan tutup ujian (web)         | web      | 013, 014             | Review |
-| [TKT-016](TKT-016-storage-module.md)            | Modul storage MinIO/S3 (api)                  | api      | 003                  | Todo   |
-| [TKT-017](TKT-017-certificate-templates.md)     | Template sertifikat (api + web)               | api/web  | 005, 016             | Todo   |
-| [TKT-018](TKT-018-certificate-records.md)       | Baris sertifikat, penomoran, terbit ulang     | api      | 013, 017             | Todo   |
-| [TKT-019](TKT-019-certificate-render-worker.md) | Render sertifikat PDF + PNG (apps/worker)     | worker   | 018 + A12-A14        | Todo   |
-| [TKT-020](TKT-020-certificates-admin-web.md)    | Daftar dan unduh sertifikat admin (web + api) | api/web  | 018 (unduh: 019)     | Todo   |
+| [TKT-016](TKT-016-storage-module.md)            | Modul storage MinIO/S3 (api)                  | api      | 003                  | Review |
+| [TKT-017](TKT-017-certificate-templates.md)     | Template sertifikat (api + web)               | api/web  | 005, 016             | Review |
+| [TKT-018](TKT-018-certificate-records.md)       | Baris sertifikat, penomoran, terbit ulang     | api      | 013, 017             | Review |
+| [TKT-019](TKT-019-certificate-render-worker.md) | Render sertifikat PDF + PNG (apps/worker)     | worker   | 018 + A12-A14        | Review |
+| [TKT-020](TKT-020-certificates-admin-web.md)    | Daftar dan unduh sertifikat admin (web + api) | api/web  | 018 (unduh: 019)     | Review |
 | [TKT-021](TKT-021-public-download-api.md)       | Download sertifikat publik (api)              | api      | 018 (uji penuh: 019) | Todo   |
 | [TKT-022](TKT-022-public-download-web.md)       | Halaman download sertifikat publik (web)      | web      | 005, 021             | Todo   |
 | [TKT-023](TKT-023-cleanup-and-e2e.md)           | Hapus contoh products, E2E alur utama         | web/docs | 015, 020, 022        | Todo   |

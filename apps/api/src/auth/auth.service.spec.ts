@@ -39,6 +39,14 @@ describe('AuthService', () => {
       JWT_EXPIRES_IN: '8h',
       AUTH_COOKIE_NAME: 'karate_session',
       SUPERADMIN_NAME: 'Super Admin',
+      S3_ENDPOINT: 'http://localhost:9000',
+      S3_BUCKET: 'karate-files',
+      S3_REGION: 'us-east-1',
+      S3_ACCESS_KEY: 'minio',
+      S3_SECRET_KEY: 'minio_dev_password',
+      S3_FORCE_PATH_STYLE: true,
+      S3_PRESIGN_TTL_SECONDS: 300,
+      REDIS_URL: 'redis://localhost:6379',
     };
     mockResponse = {
       cookie: vi.fn(),

@@ -9,6 +9,7 @@
   "scripts": {
     "dev:web": "pnpm --filter @karate/web dev",
     "dev:api": "pnpm --filter @karate/api dev",
+    "dev:worker": "pnpm --filter @karate/worker dev",
     "infra:up": "docker compose up -d",
     "infra:down": "docker compose down",
     "db:generate": "pnpm --filter @karate/db generate",

@@ -15,26 +15,27 @@ publik. Bahasa UI: **Indonesia**. Nama variabel, fungsi, dan file: **Inggris**.
 ```
 apps/
 ├── web/        Next.js 16 (dari fe-template). Aturan lengkap: apps/web/AGENTS.md
-└── api/        NestJS 12 (ESM). Aturan: apps/api/README.md
+├── api/        NestJS 12 (ESM). Aturan: apps/api/README.md
+└── worker/     Background worker render sertifikat (BullMQ + Redis). Aturan: apps/worker/README.md
 packages/
 └── db/         Prisma 7 (PostgreSQL): schema, migrasi, seed
 docs/           requirements.md (kebutuhan produk), architecture.md (keputusan teknis)
-docker-compose.yml   PostgreSQL + MinIO untuk development lokal
+docker-compose.yml   PostgreSQL + MinIO + Redis untuk development lokal
 ```
 
-Belum ada (sengaja ditunda, lihat `docs/architecture.md`): `apps/worker` (render sertifikat) dan
-`packages/shared`. Jangan dibuat sebelum dibutuhkan.
+Belum ada (sengaja ditunda, lihat `docs/architecture.md`): `packages/shared`. Jangan dibuat sebelum dibutuhkan.
 
 ## Perintah (dari root)
 
 ```bash
 pnpm install            # jalankan `git init -b main` dulu agar husky terpasang
-pnpm infra:up           # PostgreSQL + MinIO
+pnpm infra:up           # PostgreSQL + MinIO + Redis
 pnpm db:generate        # Prisma Client (wajib sebelum typecheck/seed)
 pnpm db:migrate         # migrasi dev
 pnpm db:seed            # warna sabuk
 pnpm db:seed:admin      # akun superadmin awal
 pnpm dev:api            # http://localhost:4000/api/health
+pnpm dev:worker         # worker render sertifikat (BullMQ)
 pnpm dev:web            # http://localhost:3000
 pnpm check              # lint + typecheck + test semua workspace (jalankan sebelum selesai)
 pnpm format             # Prettier semua workspace

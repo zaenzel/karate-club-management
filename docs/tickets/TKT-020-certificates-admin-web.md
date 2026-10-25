@@ -5,7 +5,7 @@
 | Area            | api / web                             |
 | Prioritas       | P0                                    |
 | Ukuran          | M                                     |
-| Status          | Todo                                  |
+| Status          | Review                                |
 | Bergantung pada | TKT-018 (unduhan nyata butuh TKT-019) |
 | Membuka         | TKT-023                               |
 | Asumsi terkait  | -                                     |

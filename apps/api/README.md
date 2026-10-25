@@ -79,3 +79,17 @@ Semua endpoint otomatis terproteksi oleh `JwtAuthGuard` global, kecuali jika dit
   }
   ```
 - Seed Super Admin pertama: jalankan `pnpm db:seed:admin` (atau `pnpm --filter @karate/api seed:admin`).
+
+## File Storage (MinIO / S3)
+
+Modul `StorageModule` (global) dan `StorageService` menangani upload, ambil, hapus, dan pembuatan presigned download URL.
+
+### Konvensi Key Storage
+
+Penyimpanan file mengikuti pola terstruktur:
+
+- **Desain Template**: `templates/<templateId>/design.pdf`
+- **Tanda Tangan Template**: `templates/<templateId>/signature.png`
+- **Hasil Render Sertifikat**: `certificates/<tahun>/<certificateId>.pdf` dan `certificates/<tahun>/<certificateId>.png`
+
+> **Aturan Keamanan & Privasi**: Key file tidak boleh memuat nama member, nomor anggota, atau data pribadi lainnya.

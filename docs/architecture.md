@@ -10,9 +10,10 @@ Dibangun dari nol, jalan lokal dulu, dirancang agar bisa naik ke server tanpa me
 | API          | NestJS 12 (ESM), Zod              | REST di prefix `/api`. Satu modul per domain                    |
 | Database     | PostgreSQL 17 + Prisma 7          | Skema di `packages/db`, driver adapter `@prisma/adapter-pg`     |
 | File storage | MinIO (S3-compatible)             | Desain template, tanda tangan, hasil render sertifikat          |
-| Infra lokal  | Docker Compose                    | Hanya PostgreSQL + MinIO. Web dan api jalan lewat pnpm          |
+| Queue/Cache  | Redis 7 + BullMQ                  | Antrian render sertifikat apps/worker                           |
+| Infra lokal  | Docker Compose                    | PostgreSQL + MinIO + Redis. Web, api, worker via pnpm           |
 
-Port lokal: web 3000, api 4000, PostgreSQL 5433, MinIO 9000 (API) dan 9001 (console).
+Port lokal: web 3000, api 4000, PostgreSQL 5433, MinIO 9000 (API) dan 9001 (console), Redis 6379.
 
 ## Alur data
 
@@ -38,13 +39,9 @@ ditimpa sebagai teks asli dengan font ter-embed. Jangan merender ulang saat undu
 
 ## Yang sengaja belum dibuat
 
-- **`apps/worker`**: render sertifikat di proses terpisah (antrian BullMQ + Redis, Chromium
-  headless atau `pdf-lib`). Dibuat setelah file desain PDF tersedia, karena cara render bergantung
-  pada isi PDF-nya. Sampai itu, Redis belum ada di `docker-compose.yml`.
 - **`packages/shared`**: tipe/skema Zod yang dipakai web dan api. Dibuat saat ada kode yang
   benar-benar dipakai bersama.
-- **Auth**: Super Admin login (JWT, httpOnly cookie, argon2). Dibuat bersama modul pertama yang
-  butuh proteksi.
+- **Role non-admin**: admin cabang, coach, penguji, member/wali (ditunda ke fase 2).
 
 ## Jalur scaling
 
